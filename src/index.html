@@ -110,8 +110,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Contact</th>
-                            <th>Email</th>
-                            <th>Member Type</th>
+                            <th>Address</th>
                             <th>Join Date</th>
                             <th>Actions</th>
                         </tr>
@@ -206,16 +205,8 @@
                             <input type="text" class="form-control" name="contact">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" name="email">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Member Type</label>
-                            <select class="form-control" name="member_type">
-                                <option value="student">Student</option>
-                                <option value="teacher">Teacher</option>
-                                <option value="staff">Staff</option>
-                            </select>
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" name="address" rows="2"></textarea>
                         </div>
                     </form>
                 </div>
@@ -239,15 +230,18 @@
                     <form id="add-borrowing-form">
                         <div class="mb-3">
                             <label class="form-label">Book</label>
-                            <select class="form-control" name="book_id" required>
-                                <!-- Options will be loaded dynamically -->
+                            <!-- <select class="form-control" name="book_id" required> -->
+                                  <select id="borrow-book-id" name="book_id" class="form-control" required></select>
+                                <!-- Options will be loaded dynamically 
                             </select>
+                            -->
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Member</label>
-                            <select class="form-control" name="member_id" required>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
+                            <!-- <select class="form-control" name="member_id" required>
+                                <!-- Options will be loaded dynamically 
+                            </select> -->
+                            <select id="borrow-member-id" name="member_id" class="form-control" required></select>
                         </div>
                     </form>
                 </div>
@@ -259,6 +253,10 @@
         </div>
     </div>
 
+    <script>
+        // Make jQuery available in the window scope
+        window.$ = window.jQuery = require('jquery');
+    </script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
     <script src="js/app.js"></script>

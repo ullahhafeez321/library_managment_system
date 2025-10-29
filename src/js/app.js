@@ -107,8 +107,7 @@ async function loadMembers() {
                 <td>${member.id}</td>
                 <td>${member.name}</td>
                 <td>${member.contact || "-"}</td>
-                <td>${member.email || "-"}</td>
-                <td>${member.member_type}</td>
+                <td>${member.address || "-"}</td>
                 <td>${new Date(member.join_date).toLocaleDateString()}</td>
                 <td>
                     <button class="btn btn-sm btn-primary btn-action edit-member" data-id="${
@@ -211,4 +210,53 @@ document.addEventListener("click", async (e) => {
       Swal.fire("Error", "Failed to return book: " + error.message, "error");
     }
   }
+});
+
+async function populateBooksDropdown() {
+  try {
+    const books = await ipcRenderer.invoke("get-books");
+    const bookSelect = document.getElementById("borrow-book-id");
+    bookSelect.innerHTML = '<option value="">Select Book</option>';
+
+    books
+      .filter((book) => book.available > 0)
+      .forEach((book) => {
+        const option = document.createElement("option");
+        option.value = book.id;
+        option.textContent = `${book.title} (${book.available}/${book.quantity})`;
+        bookSelect.appendChild(option);
+      });
+  } catch (error) {
+    Swal.fire(
+      "Error",
+      "Failed to load books for dropdown: " + error.message,
+      "error"
+    );
+  }
+}
+
+async function populateMembersDropdown() {
+  try {
+    const members = await ipcRenderer.invoke("get-members");
+    const memberSelect = document.getElementById("borrow-member-id");
+    memberSelect.innerHTML = '<option value="">Select Member</option>';
+
+    members.forEach((member) => {
+      const option = document.createElement("option");
+      option.value = member.id;
+      option.textContent = member.name;
+      memberSelect.appendChild(option);
+    });
+  } catch (error) {
+    Swal.fire(
+      "Error",
+      "Failed to load members for dropdown: " + error.message,
+      "error"
+    );
+  }
+}
+
+$("#addBorrowingModal").on("show.bs.modal", () => {
+  populateBooksDropdown();
+  populateMembersDropdown();
 });

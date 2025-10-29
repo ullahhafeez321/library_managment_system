@@ -57,8 +57,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         contact TEXT,
-        email TEXT UNIQUE,
-        member_type TEXT,
+        address TEXT,
         join_date DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
@@ -110,16 +109,11 @@ ipcMain.handle("get-books", async () => {
 
 ipcMain.handle("add-member", async (event, memberData) => {
   return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO members (name, contact, email, member_type) 
-                    VALUES (?, ?, ?, ?)`;
+    const sql = `INSERT INTO members (name, contact, address,join_date) 
+                    VALUES (?, ?, ?, CURRENT_TIMESTAMP)`;
     db.run(
       sql,
-      [
-        memberData.name,
-        memberData.contact,
-        memberData.email,
-        memberData.member_type,
-      ],
+      [memberData.name, memberData.contact, memberData.address],
       function (err) {
         if (err) reject(err);
         resolve(this.lastID);
