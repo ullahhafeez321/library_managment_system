@@ -246,3 +246,61 @@ ipcMain.handle("return-book", async (event, borrowingId) => {
     });
   });
 });
+
+// ====================== BOOKS EDIT & DELETE ======================
+ipcMain.handle("update-book", async (event, bookData) => {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE books SET title=?, author=?, isbn=?, category=?, quantity=?, available=? WHERE id=?`;
+    db.run(
+      sql,
+      [
+        bookData.title,
+        bookData.author,
+        bookData.isbn,
+        bookData.category,
+        bookData.quantity,
+        bookData.available,
+        bookData.id,
+      ],
+      function (err) {
+        if (err) reject(err);
+        resolve(this.changes);
+      }
+    );
+  });
+});
+
+ipcMain.handle("delete-book", async (event, bookId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM books WHERE id=?`;
+    db.run(sql, [bookId], function (err) {
+      if (err) reject(err);
+      resolve(this.changes);
+    });
+  });
+});
+
+// ====================== MEMBERS EDIT & DELETE ======================
+ipcMain.handle("update-member", async (event, memberData) => {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE members SET name=?, contact=?, address=? WHERE id=?`;
+    db.run(
+      sql,
+      [memberData.name, memberData.contact, memberData.address, memberData.id],
+      function (err) {
+        if (err) reject(err);
+        resolve(this.changes);
+      }
+    );
+  });
+});
+
+ipcMain.handle("delete-member", async (event, memberId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM members WHERE id=?`;
+    db.run(sql, [memberId], function (err) {
+      if (err) reject(err);
+      resolve(this.changes);
+    });
+  });
+});

@@ -212,6 +212,127 @@ document.addEventListener("click", async (e) => {
   }
 });
 
+// ====================== EDIT & DELETE: BOOKS ======================
+document.addEventListener("click", async (e) => {
+  // DELETE BOOK
+  if (e.target.matches(".delete-book")) {
+    const id = e.target.dataset.id;
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the book!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await ipcRenderer.invoke("delete-book", id);
+        Swal.fire("Deleted!", "Book deleted successfully.", "success");
+        loadBooks();
+      } catch (error) {
+        Swal.fire("Error", "Failed to delete book: " + error.message, "error");
+      }
+    }
+  }
+
+  // EDIT BOOK
+  if (e.target.matches(".edit-book")) {
+    const id = e.target.dataset.id;
+    const books = await ipcRenderer.invoke("get-books");
+    const book = books.find((b) => b.id == id);
+
+    if (!book) return;
+
+    // Fill modal form
+    document.querySelector("#edit-book-id").value = book.id;
+    document.querySelector("#edit-title").value = book.title;
+    document.querySelector("#edit-author").value = book.author;
+    document.querySelector("#edit-isbn").value = book.isbn;
+    document.querySelector("#edit-category").value = book.category;
+    document.querySelector("#edit-quantity").value = book.quantity;
+    document.querySelector("#edit-available").value = book.available;
+
+    $("#editBookModal").modal("show");
+  }
+});
+
+document.getElementById("update-book").addEventListener("click", async () => {
+  const form = document.getElementById("edit-book-form");
+  const formData = new FormData(form);
+  const bookData = Object.fromEntries(formData.entries());
+
+  try {
+    await ipcRenderer.invoke("update-book", bookData);
+    Swal.fire("Updated!", "Book updated successfully!", "success");
+    $("#editBookModal").modal("hide");
+    loadBooks();
+  } catch (error) {
+    Swal.fire("Error", "Failed to update book: " + error.message, "error");
+  }
+});
+
+// ====================== EDIT & DELETE: MEMBERS ======================
+document.addEventListener("click", async (e) => {
+  // DELETE MEMBER
+  if (e.target.matches(".delete-member")) {
+    const id = e.target.dataset.id;
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the member!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await ipcRenderer.invoke("delete-member", id);
+        Swal.fire("Deleted!", "Member deleted successfully.", "success");
+        loadMembers();
+      } catch (error) {
+        Swal.fire(
+          "Error",
+          "Failed to delete member: " + error.message,
+          "error"
+        );
+      }
+    }
+  }
+
+  // EDIT MEMBER
+  if (e.target.matches(".edit-member")) {
+    const id = e.target.dataset.id;
+    const members = await ipcRenderer.invoke("get-members");
+    const member = members.find((m) => m.id == id);
+
+    if (!member) return;
+
+    // Fill modal form
+    document.querySelector("#edit-member-id").value = member.id;
+    document.querySelector("#edit-name").value = member.name;
+    document.querySelector("#edit-contact").value = member.contact;
+    document.querySelector("#edit-address").value = member.address;
+
+    $("#editMemberModal").modal("show");
+  }
+});
+
+document.getElementById("update-member").addEventListener("click", async () => {
+  const form = document.getElementById("edit-member-form");
+  const formData = new FormData(form);
+  const memberData = Object.fromEntries(formData.entries());
+
+  try {
+    await ipcRenderer.invoke("update-member", memberData);
+    Swal.fire("Updated!", "Member updated successfully!", "success");
+    $("#editMemberModal").modal("hide");
+    loadMembers();
+  } catch (error) {
+    Swal.fire("Error", "Failed to update member: " + error.message, "error");
+  }
+});
+
 async function populateBooksDropdown() {
   try {
     const books = await ipcRenderer.invoke("get-books");

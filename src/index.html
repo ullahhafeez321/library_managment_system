@@ -246,6 +246,85 @@
         </div>
     </div>
 
+    <!-- Edit Book Modal -->
+<div class="modal fade" id="editBookModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Book</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-book-form">
+          <input type="hidden" name="id" id="edit-book-id" />
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" id="edit-title" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Author</label>
+            <input type="text" class="form-control" name="author" id="edit-author" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ISBN</label>
+            <input type="text" class="form-control" name="isbn" id="edit-isbn" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <input type="text" class="form-control" name="category" id="edit-category" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" name="quantity" id="edit-quantity" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Available</label>
+            <input type="number" class="form-control" name="available" id="edit-available" required />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="update-book">Update Book</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Member</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-member-form">
+          <input type="hidden" name="id" id="edit-member-id" />
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" id="edit-name" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contact</label>
+            <input type="text" class="form-control" name="contact" id="edit-contact" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <textarea class="form-control" name="address" id="edit-address" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="update-member">Update Member</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <script>
         // Make jQuery available in the window scope
         window.$ = window.jQuery = require('jquery');
