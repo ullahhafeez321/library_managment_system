@@ -6,7 +6,7 @@
 
 **Dhoria Library System** is a comprehensive offline desktop application built for **Dhoria Academy Gwadar** to manage library records efficiently. It allows librarians to store, search, and manage books, students, and borrowing transactions — all without requiring an internet connection.
 
-![Electron App](https://raw.githubusercontent.com/electron/electron/main/assets/img/electron-logo.svg)
+![Electron.js](https://electronjs.org/images/electron-logo.svg)
 
 ---
 
