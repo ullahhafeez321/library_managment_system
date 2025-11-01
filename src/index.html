@@ -6,69 +6,136 @@
     <title>Dhoria Academy Library Management System</title>
     <link rel="icon" href="./styles/favicon.png" type="image/x-icon">
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="styles/main.css" rel="stylesheet">
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body class="bg-gradient">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
         <div class="container-fluid">
-            <img width="76px" height="70px" src="./styles/favicon.png" alt="logo">
-            <a class="navbar-brand" href="#">Dhoria Academy Library</a>
+            <div class="navbar-brand-container">
+                <img width="60px" height="60px" src="./styles/favicon.png" alt="logo" class="logo-spin">
+                <a class="navbar-brand" href="#">Dhoria Academy Library</a>
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#" data-page="dashboard">Dashboard</a>
+                        <a class="nav-link active" href="#" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-page="books">Books</a>
+                        <a class="nav-link" href="#" data-page="books">
+                            <i class="fas fa-book me-2"></i>Books
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-page="members">Members</a>
+                        <a class="nav-link" href="#" data-page="members">
+                            <i class="fas fa-users me-2"></i>Members
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-page="borrowings">Borrowings</a>
+                        <a class="nav-link" href="#" data-page="borrowings">
+                            <i class="fas fa-exchange-alt me-2"></i>Borrowings
+                        </a>
                     </li>
                 </ul>
+                <div class="navbar-text">
+                    <small class="text-light">Developed by Hafeez Ullah</small>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
         <!-- Dashboard Section -->
         <div id="dashboard-section" class="page-section active">
-            <h2>Dashboard</h2>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="welcome-card">
+                        <h2><i class="fas fa-book-reader me-3"></i>Library Dashboard</h2>
+                        <p class="welcome-text">Welcome to Dhoria Academy Library Management System</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stats-card bg-primary-gradient">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Books</h5>
+                                    <p class="card-text display-4" id="total-books">0</p>
+                                </div>
+                                <div class="icon-circle">
+                                    <i class="fas fa-book fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stats-card bg-success-gradient">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Available Books</h5>
+                                    <p class="card-text display-4" id="available-books">0</p>
+                                </div>
+                                <div class="icon-circle">
+                                    <i class="fas fa-book-open fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stats-card bg-info-gradient">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Members</h5>
+                                    <p class="card-text display-4" id="total-members">0</p>
+                                </div>
+                                <div class="icon-circle">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stats-card bg-warning-gradient">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Active Borrowings</h5>
+                                    <p class="card-text display-4" id="active-borrowings">0</p>
+                                </div>
+                                <div class="icon-circle">
+                                    <i class="fas fa-exchange-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
             <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Books</h5>
-                            <p class="card-text" id="total-books">0</p>
+                <div class="col-12">
+                    <div class="card recent-activity">
+                        <div class="card-header">
+                            <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-success">
                         <div class="card-body">
-                            <h5 class="card-title">Available Books</h5>
-                            <p class="card-text" id="available-books">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-info">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Members</h5>
-                            <p class="card-text" id="total-members">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-warning">
-                        <div class="card-body">
-                            <h5 class="card-title">Active Borrowings</h5>
-                            <p class="card-text" id="active-borrowings">0</p>
+                            <div id="recent-activity-content">
+                                <p class="text-muted">No recent activity to display</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -77,84 +144,102 @@
 
         <!-- Books Section -->
         <div id="books-section" class="page-section">
-            <h2>Books Management</h2>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBookModal">
-                Add New Book
-            </button>
-            <div class="table-responsive">
-                <table class="table table-striped" id="books-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>ISBN</th>
-                            <th>Category</th>
-                            <th>Available</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-book me-3"></i>Books Management</h2>
+                <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addBookModal">
+                    <i class="fas fa-plus me-2"></i>Add New Book
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="books-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>ISBN</th>
+                                    <th>Category</th>
+                                    <th>Available</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Members Section -->
         <div id="members-section" class="page-section">
-            <h2>Members Management</h2>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-                Add New Member
-            </button>
-            <div class="table-responsive">
-                <table class="table table-striped" id="members-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Contact</th>
-                            <th>Address</th>
-                            <th>Join Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-users me-3"></i>Members Management</h2>
+                <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                    <i class="fas fa-plus me-2"></i>Add New Member
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="members-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Address</th>
+                                    <th>Join Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Borrowings Section -->
         <div id="borrowings-section" class="page-section">
-            <h2>Borrowings Management</h2>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowingModal">
-                New Borrowing
-            </button>
-            <div class="table-responsive">
-                <table class="table table-striped" id="borrowings-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Book</th>
-                            <th>Member</th>
-                            <th>Borrow Date</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-exchange-alt me-3"></i>Borrowings Management</h2>
+                <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#addBorrowingModal">
+                    <i class="fas fa-plus me-2"></i>New Borrowing
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="borrowings-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Book</th>
+                                    <th>Member</th>
+                                    <th>Borrow Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals (Keep your existing modals, just add the gradient classes) -->
     <!-- Add Book Modal -->
     <div class="modal fade" id="addBookModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Book</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title"><i class="fas fa-book me-2"></i>Add New Book</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="add-book-form">
@@ -182,7 +267,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-book">Save Book</button>
+                    <button type="button" class="btn btn-primary-gradient" id="save-book">Save Book</button>
                 </div>
             </div>
         </div>
@@ -192,9 +277,9 @@
     <div class="modal fade" id="addMemberModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Member</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Add New Member</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="add-member-form">
@@ -214,7 +299,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-member">Save Member</button>
+                    <button type="button" class="btn btn-primary-gradient" id="save-member">Save Member</button>
                 </div>
             </div>
         </div>
@@ -224,15 +309,15 @@
     <div class="modal fade" id="addBorrowingModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Borrowing</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title"><i class="fas fa-exchange-alt me-2"></i>New Borrowing</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="add-borrowing-form">
                         <div class="mb-3">
                             <label class="form-label">Book</label>
-                                <select id="borrow-book-id" name="book_id" class="form-control" required></select>
+                            <select id="borrow-book-id" name="book_id" class="form-control" required></select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Member</label>
@@ -242,93 +327,91 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-borrowing">Save Borrowing</button>
+                    <button type="button" class="btn btn-primary-gradient" id="save-borrowing">Save Borrowing</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Edit Book Modal -->
-<div class="modal fade" id="editBookModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Book</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="edit-book-form">
-          <input type="hidden" name="id" id="edit-book-id" />
-          <div class="mb-3">
-            <label class="form-label">Title</label>
-            <input type="text" class="form-control" name="title" id="edit-title" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Author</label>
-            <input type="text" class="form-control" name="author" id="edit-author" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">ISBN</label>
-            <input type="text" class="form-control" name="isbn" id="edit-isbn" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Category</label>
-            <input type="text" class="form-control" name="category" id="edit-category" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" name="quantity" id="edit-quantity" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Available</label>
-            <input type="number" class="form-control" name="available" id="edit-available" required />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="update-book">Update Book</button>
-      </div>
+    <div class="modal fade" id="editBookModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Book</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-book-form">
+                        <input type="hidden" name="id" id="edit-book-id" />
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title" id="edit-title" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Author</label>
+                            <input type="text" class="form-control" name="author" id="edit-author" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ISBN</label>
+                            <input type="text" class="form-control" name="isbn" id="edit-isbn" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="category" id="edit-category" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" name="quantity" id="edit-quantity" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Available</label>
+                            <input type="number" class="form-control" name="available" id="edit-available" required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary-gradient" id="update-book">Update Book</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- Edit Member Modal -->
-<div class="modal fade" id="editMemberModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Member</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="edit-member-form">
-          <input type="hidden" name="id" id="edit-member-id" />
-          <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" id="edit-name" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Contact</label>
-            <input type="text" class="form-control" name="contact" id="edit-contact" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Address</label>
-            <textarea class="form-control" name="address" id="edit-address" rows="2"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="update-member">Update Member</button>
-      </div>
+    <!-- Edit Member Modal -->
+    <div class="modal fade" id="editMemberModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-gradient text-white">
+                    <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Edit Member</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-member-form">
+                        <input type="hidden" name="id" id="edit-member-id" />
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" id="edit-name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contact</label>
+                            <input type="text" class="form-control" name="contact" id="edit-contact" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" name="address" id="edit-address" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary-gradient" id="update-member">Update Member</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
 
     <script>
-        // Make jQuery available in the window scope
         window.$ = window.jQuery = require('jquery');
     </script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

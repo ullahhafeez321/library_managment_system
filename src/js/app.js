@@ -20,6 +20,67 @@ function showPage(pageId) {
   document.querySelector(`[data-page="${pageId}"]`).classList.add("active");
 }
 
+// Listen for navigation from menu
+require("electron").ipcRenderer.on("navigate-to", (event, page) => {
+  showPage(page);
+});
+
+// Recent Activity
+async function loadRecentActivity() {
+  try {
+    const borrowings = await ipcRenderer.invoke("get-borrowings");
+    const recentActivity = document.getElementById("recent-activity-content");
+
+    const recentItems = borrowings.slice(0, 5); // Last 5 activities
+
+    if (recentItems.length === 0) {
+      recentActivity.innerHTML =
+        '<p class="text-muted">No recent activity to display</p>';
+      return;
+    }
+
+    let activityHTML = "";
+    recentItems.forEach((activity) => {
+      const status = activity.return_date
+        ? "returned"
+        : new Date(activity.due_date) < new Date()
+        ? "overdue"
+        : "borrowed";
+      const statusIcon =
+        status === "returned"
+          ? "fa-check-circle text-success"
+          : status === "overdue"
+          ? "fa-exclamation-circle text-danger"
+          : "fa-book text-primary";
+
+      activityHTML += `
+        <div class="activity-item d-flex align-items-center mb-3 p-2 rounded" style="background: #f8f9fa;">
+          <i class="fas ${statusIcon} me-3 fa-lg"></i>
+          <div class="flex-grow-1">
+            <strong>${activity.member_name}</strong> 
+            ${
+              status === "borrowed"
+                ? "borrowed"
+                : status === "returned"
+                ? "returned"
+                : "has overdue"
+            } 
+            <strong>"${activity.book_title}"</strong>
+            <br>
+            <small class="text-muted">${new Date(
+              activity.borrow_date
+            ).toLocaleDateString()}</small>
+          </div>
+        </div>
+      `;
+    });
+
+    recentActivity.innerHTML = activityHTML;
+  } catch (error) {
+    console.error("Failed to load recent activity:", error);
+  }
+}
+
 // Books Management
 document.getElementById("save-book").addEventListener("click", async () => {
   const form = document.getElementById("add-book-form");
@@ -195,6 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadBooks();
   loadMembers();
   loadBorrowings();
+  loadRecentActivity();
 });
 
 // Event delegation for dynamic buttons

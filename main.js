@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require("electron");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
@@ -7,11 +7,12 @@ const db = new sqlite3.Database(path.join(__dirname, "library.db"), (err) => {
   if (err) console.error("Database opening error: ", err);
 });
 
+// Create the main application window
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: __dirname + "/src/styles/favicon.png",
+    icon: path.join(__dirname, "src/styles/favicon.png"),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -19,6 +20,97 @@ function createWindow() {
   });
 
   win.loadFile("src/index.html");
+
+  // Create application menu
+  const template = [
+    {
+      label: "File",
+      submenu: [
+        {
+          label: "Dashboard",
+          accelerator: "CmdOrCtrl+1",
+          click: () => {
+            win.webContents.send("navigate-to", "dashboard");
+          },
+        },
+        {
+          label: "Books",
+          accelerator: "CmdOrCtrl+2",
+          click: () => {
+            win.webContents.send("navigate-to", "books");
+          },
+        },
+        {
+          label: "Members",
+          accelerator: "CmdOrCtrl+3",
+          click: () => {
+            win.webContents.send("navigate-to", "members");
+          },
+        },
+        {
+          label: "Borrowings",
+          accelerator: "CmdOrCtrl+4",
+          click: () => {
+            win.webContents.send("navigate-to", "borrowings");
+          },
+        },
+        { type: "separator" },
+        {
+          label: "Exit",
+          accelerator: process.platform === "darwin" ? "Cmd+Q" : "Ctrl+Q",
+          click: () => {
+            app.quit();
+          },
+        },
+      ],
+    },
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo", label: "Undo" },
+        { role: "redo", label: "Redo" },
+        { type: "separator" },
+        { role: "cut", label: "Cut" },
+        { role: "copy", label: "Copy" },
+        { role: "paste", label: "Paste" },
+      ],
+    },
+    {
+      label: "View",
+      submenu: [
+        { role: "reload", label: "Reload" },
+        { role: "forceReload", label: "Force Reload" },
+        { role: "toggleDevTools", label: "Toggle Developer Tools" },
+        { type: "separator" },
+        { role: "resetZoom", label: "Actual Size" },
+        { role: "zoomIn", label: "Zoom In" },
+        { role: "zoomOut", label: "Zoom Out" },
+        { type: "separator" },
+        { role: "togglefullscreen", label: "Toggle Fullscreen" },
+      ],
+    },
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "About",
+          click: () => {
+            dialog.showMessageBox(win, {
+              type: "info",
+              title: "About Library System",
+              message: "Dhoria Academy Library Management System",
+              detail:
+                "Version 1.0.0\n\nDeveloped by Hafeez Ullah\n\nA comprehensive library management solution for educational institutions.",
+            });
+          },
+        },
+      ],
+    },
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+
   // Uncomment the following line to open DevTools by default
   // win.webContents.openDevTools();
 }
