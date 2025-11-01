@@ -3,8 +3,22 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 const Database = require("better-sqlite3");
 
-// Path in Documents
-const dbPath = path.join(app.getPath("documents"), "library.db");
+const folderPath = path.join(app.getPath("documents"), "DhoriaLibrary");
+const fs = require("fs");
+
+// Ensure the folder exists
+if (!fs.existsSync(folderPath)) {
+  fs.mkdirSync(folderPath, { recursive: true });
+}
+
+// Path to the database inside that folder
+const dbPath = path.join(folderPath, "library.db");
+
+// Copy default DB from app folder if it doesn't exist
+const defaultDbPath = path.join(__dirname, "library.db");
+if (!fs.existsSync(dbPath) && fs.existsSync(defaultDbPath)) {
+  fs.copyFileSync(defaultDbPath, dbPath);
+}
 
 let db;
 try {
@@ -77,7 +91,6 @@ function createWindow() {
       submenu: [
         { role: "reload", label: "Reload" },
         { role: "forceReload", label: "Force Reload" },
-        { role: "toggleDevTools", label: "Toggle Developer Tools" },
         { type: "separator" },
         { role: "resetZoom", label: "Actual Size" },
         { role: "zoomIn", label: "Zoom In" },
