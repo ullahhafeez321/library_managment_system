@@ -7,13 +7,14 @@
     "start": "electron .",
     "build": "electron-builder"
   },
-  "author": "Dhoria Academy Gwadar",
+  "author": "Hafeez Ullah",
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "bootstrap": "^5.3.0",
     "jquery": "^3.7.1",
-    "sweetalert2": "^11.7.20"
+    "sweetalert2": "^11.7.20",
+    "electron-is-dev": "^2.0.0"
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
@@ -31,12 +32,25 @@
       "main.js",
       "index.html",
       "src/**/*",
-      "library.db",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "library.db",
+        "to": "library.db",
+        "filter": ["**/*"]
+      }
     ],
     "win": {
       "target": "nsis",
       "icon": "src/styles/favicon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }

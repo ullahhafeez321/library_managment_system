@@ -1,9 +1,18 @@
 const { app, BrowserWindow, ipcMain, Menu, dialog } = require("electron");
 const path = require("path");
+const isDev = require("electron-is-dev");
 const Database = require("better-sqlite3");
 
-// Initialize database
-const db = new Database(path.join(__dirname, "library.db"));
+// Path in Documents
+const dbPath = path.join(app.getPath("documents"), "library.db");
+
+let db;
+try {
+  db = new Database(dbPath);
+  console.log("Database opened at:", dbPath);
+} catch (err) {
+  console.error("Database opening error:", err);
+}
 
 // Create the main application window
 function createWindow() {
