@@ -1,11 +1,9 @@
 const { app, BrowserWindow, ipcMain, Menu, dialog } = require("electron");
 const path = require("path");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 
 // Initialize database
-const db = new sqlite3.Database(path.join(__dirname, "library.db"), (err) => {
-  if (err) console.error("Database opening error: ", err);
-});
+const db = new Database(path.join(__dirname, "library.db"));
 
 // Create the main application window
 function createWindow() {
@@ -29,38 +27,28 @@ function createWindow() {
         {
           label: "Dashboard",
           accelerator: "CmdOrCtrl+1",
-          click: () => {
-            win.webContents.send("navigate-to", "dashboard");
-          },
+          click: () => win.webContents.send("navigate-to", "dashboard"),
         },
         {
           label: "Books",
           accelerator: "CmdOrCtrl+2",
-          click: () => {
-            win.webContents.send("navigate-to", "books");
-          },
+          click: () => win.webContents.send("navigate-to", "books"),
         },
         {
           label: "Members",
           accelerator: "CmdOrCtrl+3",
-          click: () => {
-            win.webContents.send("navigate-to", "members");
-          },
+          click: () => win.webContents.send("navigate-to", "members"),
         },
         {
           label: "Borrowings",
           accelerator: "CmdOrCtrl+4",
-          click: () => {
-            win.webContents.send("navigate-to", "borrowings");
-          },
+          click: () => win.webContents.send("navigate-to", "borrowings"),
         },
         { type: "separator" },
         {
           label: "Exit",
           accelerator: process.platform === "darwin" ? "Cmd+Q" : "Ctrl+Q",
-          click: () => {
-            app.quit();
-          },
+          click: () => app.quit(),
         },
       ],
     },
@@ -110,290 +98,196 @@ function createWindow() {
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
-  // Uncomment the following line to open DevTools by default
-  // win.webContents.openDevTools();
 }
 
+// ====================== APP LIFECYCLE ======================
 app.whenReady().then(() => {
   createWindow();
-
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  if (process.platform !== "darwin") app.quit();
 });
 
-// Initialize Database Tables
-db.serialize(() => {
-  // Books table
-  db.run(`CREATE TABLE IF NOT EXISTS books (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        author TEXT NOT NULL,
-        isbn TEXT UNIQUE,
-        category TEXT,
-        quantity INTEGER DEFAULT 1,
-        available INTEGER DEFAULT 1,
-        added_date DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
+// ====================== DATABASE TABLES ======================
+db.exec(`
+  CREATE TABLE IF NOT EXISTS books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    isbn TEXT UNIQUE,
+    category TEXT,
+    quantity INTEGER DEFAULT 1,
+    available INTEGER DEFAULT 1,
+    added_date DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 
-  // Members table
-  db.run(`CREATE TABLE IF NOT EXISTS members (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        contact TEXT,
-        address TEXT,
-        join_date DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
+  CREATE TABLE IF NOT EXISTS members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    contact TEXT,
+    address TEXT,
+    join_date DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 
-  // Borrowings table
-  db.run(`CREATE TABLE IF NOT EXISTS borrowings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        book_id INTEGER,
-        member_id INTEGER,
-        borrow_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        due_date DATETIME,
-        return_date DATETIME,
-        status TEXT DEFAULT 'borrowed',
-        FOREIGN KEY (book_id) REFERENCES books (id),
-        FOREIGN KEY (member_id) REFERENCES members (id)
-    )`);
-});
+  CREATE TABLE IF NOT EXISTS borrowings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id INTEGER,
+    member_id INTEGER,
+    borrow_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    due_date DATETIME,
+    return_date DATETIME,
+    status TEXT DEFAULT 'borrowed',
+    FOREIGN KEY (book_id) REFERENCES books (id),
+    FOREIGN KEY (member_id) REFERENCES members (id)
+  );
+`);
 
-// IPC Handlers for database operations
+// ====================== IPC HANDLERS ======================
+
+// Add a book
 ipcMain.handle("add-book", async (event, bookData) => {
-  return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO books (title, author, isbn, category, quantity, available) 
-                    VALUES (?, ?, ?, ?, ?, ?)`;
-    db.run(
-      sql,
-      [
-        bookData.title,
-        bookData.author,
-        bookData.isbn,
-        bookData.category,
-        bookData.quantity,
-        bookData.quantity,
-      ],
-      function (err) {
-        if (err) reject(err);
-        resolve(this.lastID);
-      }
-    );
-  });
+  const stmt = db.prepare(
+    `INSERT INTO books (title, author, isbn, category, quantity, available) VALUES (?, ?, ?, ?, ?, ?)`
+  );
+  const info = stmt.run(
+    bookData.title,
+    bookData.author,
+    bookData.isbn,
+    bookData.category,
+    bookData.quantity,
+    bookData.quantity
+  );
+  return info.lastInsertRowid;
 });
 
+// Get all books
 ipcMain.handle("get-books", async () => {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM books", [], (err, rows) => {
-      if (err) reject(err);
-      resolve(rows);
-    });
-  });
+  const stmt = db.prepare("SELECT * FROM books");
+  return stmt.all();
 });
 
+// Add a member
 ipcMain.handle("add-member", async (event, memberData) => {
-  return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO members (name, contact, address,join_date) 
-                    VALUES (?, ?, ?, CURRENT_TIMESTAMP)`;
-    db.run(
-      sql,
-      [memberData.name, memberData.contact, memberData.address],
-      function (err) {
-        if (err) reject(err);
-        resolve(this.lastID);
-      }
-    );
-  });
+  const stmt = db.prepare(
+    `INSERT INTO members (name, contact, address, join_date) VALUES (?, ?, ?, CURRENT_TIMESTAMP)`
+  );
+  const info = stmt.run(
+    memberData.name,
+    memberData.contact,
+    memberData.address
+  );
+  return info.lastInsertRowid;
 });
 
+// Borrow a book
 ipcMain.handle("borrow-book", async (event, borrowData) => {
-  return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      db.run("BEGIN TRANSACTION");
+  const book = db
+    .prepare("SELECT available FROM books WHERE id = ?")
+    .get(borrowData.book_id);
+  if (!book || book.available <= 0) throw new Error("Book not available");
 
-      db.run(
-        `UPDATE books SET available = available - 1 
-                    WHERE id = ? AND available > 0`,
-        [borrowData.book_id],
-        function (err) {
-          if (err) {
-            db.run("ROLLBACK");
-            reject(err);
-            return;
-          }
-
-          if (this.changes === 0) {
-            db.run("ROLLBACK");
-            reject(new Error("Book not available"));
-            return;
-          }
-
-          const sql = `INSERT INTO borrowings (book_id, member_id, due_date) 
-                           VALUES (?, ?, datetime('now', '+14 days'))`;
-          db.run(
-            sql,
-            [borrowData.book_id, borrowData.member_id],
-            function (err) {
-              if (err) {
-                db.run("ROLLBACK");
-                reject(err);
-                return;
-              }
-              db.run("COMMIT");
-              resolve(this.lastID);
-            }
-          );
-        }
-      );
-    });
+  const transaction = db.transaction(() => {
+    db.prepare("UPDATE books SET available = available - 1 WHERE id = ?").run(
+      borrowData.book_id
+    );
+    const info = db
+      .prepare(
+        "INSERT INTO borrowings (book_id, member_id, due_date) VALUES (?, ?, datetime('now', '+14 days'))"
+      )
+      .run(borrowData.book_id, borrowData.member_id);
+    return info.lastInsertRowid;
   });
+
+  return transaction();
 });
 
+// Get members
 ipcMain.handle("get-members", async () => {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM members", [], (err, rows) => {
-      if (err) reject(err);
-      resolve(rows);
-    });
-  });
+  return db.prepare("SELECT * FROM members").all();
 });
 
+// Get borrowings
 ipcMain.handle("get-borrowings", async () => {
-  return new Promise((resolve, reject) => {
-    const sql = `
-            SELECT b.*, 
-                   books.title as book_title, 
-                   members.name as member_name 
-            FROM borrowings b
-            JOIN books ON b.book_id = books.id
-            JOIN members ON b.member_id = members.id
-            ORDER BY b.borrow_date DESC`;
-    db.all(sql, [], (err, rows) => {
-      if (err) reject(err);
-      resolve(rows);
-    });
-  });
+  return db
+    .prepare(
+      `
+      SELECT b.*, 
+             books.title as book_title, 
+             members.name as member_name 
+      FROM borrowings b
+      JOIN books ON b.book_id = books.id
+      JOIN members ON b.member_id = members.id
+      ORDER BY b.borrow_date DESC
+    `
+    )
+    .all();
 });
 
+// Return a book
 ipcMain.handle("return-book", async (event, borrowingId) => {
-  return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      db.run("BEGIN TRANSACTION");
+  const borrowing = db
+    .prepare("SELECT book_id FROM borrowings WHERE id = ?")
+    .get(borrowingId);
+  if (!borrowing) throw new Error("Borrowing record not found");
 
-      db.get(
-        `SELECT book_id FROM borrowings WHERE id = ?`,
-        [borrowingId],
-        (err, borrowing) => {
-          if (err) {
-            db.run("ROLLBACK");
-            reject(err);
-            return;
-          }
-
-          if (!borrowing) {
-            db.run("ROLLBACK");
-            reject(new Error("Borrowing record not found"));
-            return;
-          }
-
-          db.run(
-            `UPDATE books SET available = available + 1 
-                        WHERE id = ?`,
-            [borrowing.book_id],
-            (err) => {
-              if (err) {
-                db.run("ROLLBACK");
-                reject(err);
-                return;
-              }
-
-              db.run(
-                `UPDATE borrowings 
-                            SET return_date = CURRENT_TIMESTAMP,
-                                status = 'returned'
-                            WHERE id = ?`,
-                [borrowingId],
-                function (err) {
-                  if (err) {
-                    db.run("ROLLBACK");
-                    reject(err);
-                    return;
-                  }
-                  db.run("COMMIT");
-                  resolve(this.changes);
-                }
-              );
-            }
-          );
-        }
-      );
-    });
+  const transaction = db.transaction(() => {
+    db.prepare("UPDATE books SET available = available + 1 WHERE id = ?").run(
+      borrowing.book_id
+    );
+    const info = db
+      .prepare(
+        "UPDATE borrowings SET return_date = CURRENT_TIMESTAMP, status = 'returned' WHERE id = ?"
+      )
+      .run(borrowingId);
+    return info.changes;
   });
+
+  return transaction();
 });
 
 // ====================== BOOKS EDIT & DELETE ======================
 ipcMain.handle("update-book", async (event, bookData) => {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE books SET title=?, author=?, isbn=?, category=?, quantity=?, available=? WHERE id=?`;
-    db.run(
-      sql,
-      [
-        bookData.title,
-        bookData.author,
-        bookData.isbn,
-        bookData.category,
-        bookData.quantity,
-        bookData.available,
-        bookData.id,
-      ],
-      function (err) {
-        if (err) reject(err);
-        resolve(this.changes);
-      }
-    );
-  });
+  const stmt = db.prepare(
+    `UPDATE books SET title=?, author=?, isbn=?, category=?, quantity=?, available=? WHERE id=?`
+  );
+  const info = stmt.run(
+    bookData.title,
+    bookData.author,
+    bookData.isbn,
+    bookData.category,
+    bookData.quantity,
+    bookData.available,
+    bookData.id
+  );
+  return info.changes;
 });
 
 ipcMain.handle("delete-book", async (event, bookId) => {
-  return new Promise((resolve, reject) => {
-    const sql = `DELETE FROM books WHERE id=?`;
-    db.run(sql, [bookId], function (err) {
-      if (err) reject(err);
-      resolve(this.changes);
-    });
-  });
+  const stmt = db.prepare("DELETE FROM books WHERE id=?");
+  const info = stmt.run(bookId);
+  return info.changes;
 });
 
 // ====================== MEMBERS EDIT & DELETE ======================
 ipcMain.handle("update-member", async (event, memberData) => {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE members SET name=?, contact=?, address=? WHERE id=?`;
-    db.run(
-      sql,
-      [memberData.name, memberData.contact, memberData.address, memberData.id],
-      function (err) {
-        if (err) reject(err);
-        resolve(this.changes);
-      }
-    );
-  });
+  const stmt = db.prepare(
+    `UPDATE members SET name=?, contact=?, address=? WHERE id=?`
+  );
+  const info = stmt.run(
+    memberData.name,
+    memberData.contact,
+    memberData.address,
+    memberData.id
+  );
+  return info.changes;
 });
 
 ipcMain.handle("delete-member", async (event, memberId) => {
-  return new Promise((resolve, reject) => {
-    const sql = `DELETE FROM members WHERE id=?`;
-    db.run(sql, [memberId], function (err) {
-      if (err) reject(err);
-      resolve(this.changes);
-    });
-  });
+  const stmt = db.prepare("DELETE FROM members WHERE id=?");
+  const info = stmt.run(memberId);
+  return info.changes;
 });
