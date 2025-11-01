@@ -1,40 +1,70 @@
 {
   "name": "dhoria-library-system",
-  "version": "1.0.0",
-  "description": "Dhoria Academy Gwadar Library Management System",
+  "version": "2.0.0",
+  "description": "Dhoria Academy Gwadar Library Management System - Enhanced Edition",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "clean": "rd /s /q dist && rd /s /q node_modules",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
   },
-  "author": "Dhoria Academy Gwadar",
+  "author": "Hafeez Ullah <ullahhafeez321@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^5.3.0",
-    "electron": "^26.0.0",
     "jquery": "^3.7.1",
-    "sqlite3": "^5.1.6",
+    "sql.js": "^1.10.0",
     "sweetalert2": "^11.7.20"
   },
   "devDependencies": {
-    "electron-builder": "^24.6.0"
+    "electron": "^26.0.0",
+    "electron-builder": "^24.13.3"
   },
   "build": {
     "appId": "com.dhoria.library",
     "productName": "Dhoria Library System",
+    "copyright": "Copyright © 2025 Hafeez Ullah",
     "directories": {
       "output": "dist"
     },
     "files": [
       "main.js",
-      "index.html",
       "src/**/*",
       "library.db",
-      "package.json"
+      "package.json",
+      "node_modules/sql.js/dist/sql-wasm.wasm"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "src/styles/favicon.png"
-    }
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "src/styles/favicon.png",
+      "publisherName": "Dhoria Academy Gwadar"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Dhoria Library System"
+    },
+    "portable": {
+      "artifactName": "Dhoria_Library_System.exe"
+    },
+    "npmRebuild": false,
+    "nodeGypRebuild": false,
+    "buildDependenciesFromSource": false,
+    "publish": null
   }
 }
